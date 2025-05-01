@@ -10,11 +10,13 @@ from eval_eng import visualise_TFV
 import model.Fusion_ViT
 from timm.models import create_model
 from model.CNN_TFV_CrossAttention import CNN_TFV_CrossAttention
+from model.test_gateattention_512 import CNN_TFV_Gateattention
 # from model.cnn_vgg19_gateattention_256 import CNN_TFV_SelfGateAttention
-from model.single_test256 import CNN_TFV_CrossAttentiongate
+from model.single_test import CNN_TFV_CrossAttentiongate
 from model.single_test512 import CNN_TFV_Gate512
-from model.CNN_GATEATTENTION import CNN_Gate_Multiview
+from model.CNN_ATTENTION import CNN_Gate_Multiview
 from model.VIT_GATEATTENTION import ViT_GateAttention
+from model.CNN_LSTM import CNN_LSTM
 
 
 def set_args():
@@ -23,20 +25,20 @@ def set_args():
     parser.add_argument('--device',                         type=int,   default=0)
     parser.add_argument('--best_model_name',                type=str,   default="try__l")
     # Data Para
-    parser.add_argument('--data_dir',                       type=str,   default="C:/Users/Niu Yihao/Desktop/OA/v3_data")
-    parser.add_argument('--model_dir',                      type=str,   default="C:/Users/Niu Yihao/Desktop/OA/data/model")
-    parser.add_argument('--batch_size',                     type=int,   default=64)
+    parser.add_argument('--data_dir',                       type=str,   default="/root/autodl-tmp/v3_data")
+    parser.add_argument('--model_dir',                      type=str,   default="/root/autodl-tmp/data/model")
+    parser.add_argument('--batch_size',                     type=int,   default=32)
     # Model Para
-    parser.add_argument('--model_type',                     type=str,   default='ViT_GateAttention') # use_vit; vgg_vit_exchange; vgg_vit_fusion; cnn; vit_token_fusion; cnn_tfv_crossattention; CNN_TFV_Gate256; CNN_TFV_Gate512; CNN_GateAttention; ViT_GateAttention
+    parser.add_argument('--model_type',                     type=str,   default='cnn_lstm') # use_vit; vgg_vit_exchange; vgg_vit_fusion; cnn; vit_token_fusion; cnn_tfv_crossattention; for_v00_gateattention; for_CNN_TFV_CrossAttentiongate; CNN_TFV_Gate512; CNN_Gate_Multiview; ViT_GateAttention; cnn_lstm
     parser.add_argument('--num_class',                      type=int,   default=5)
     parser.add_argument('--pretrained',                     type=bool,  default=True)
     parser.add_argument('--debug',                          type=bool,  default=False)
     # Para for CNN-based model
-    parser.add_argument('--net_type',                       type=str,   default='vgg') # resnet; vgg; densenet; inception
-    parser.add_argument('--depth',                          type=str,   default='19') # 18, 34, 50, 101, 152; 16, 19, 16bn, 19bn; 121, 169, 201; v3
-    parser.add_argument('--feature_dim',                    type=int,   default=5)
+    parser.add_argument('--net_type',                       type=str,   default='resnet') # resnet; vgg; densenet; inception
+    parser.add_argument('--depth',                          type=str,   default='50') # 18, 34, 50, 101, 152; 16, 19, 16bn, 19bn; 121, 169, 201; v3
+    parser.add_argument('--feature_dim',                    type=int,   default=256)
     # Para for using only one visit in CNN-based model
-    parser.add_argument('--single_v',                       type=bool,  default=True)
+    parser.add_argument('--single_v',                       type=bool,  default=False)
     parser.add_argument('--visit_num',                      type=str,   default='v00')
     # Para for VGG-ViT fusion model
     parser.add_argument('--fusion_type',                    type=str,   default='concat') # concat; multiply; add; mean; attention  ##concat好使 ##add好使(12个epoch之后)（--塌缩） ##mean也好使 ##multiply（不好使，跟add效果一样，会塌缩）##attention(也不好使)
@@ -49,13 +51,16 @@ def set_args():
     parser.add_argument('--drop_loc',                       type=str,   default='(3, 6, 9)')
     parser.add_argument('--finetune',                       type=str,   default="https://dl.fbaipublicfiles.com/deit/deit_base_patch16_224-b5f2ef4d.pth")# https://dl.fbaipublicfiles.com/deit/deit_base_patch16_224-b5f2ef4d.pth https://dl.fbaipublicfiles.com/deit/deit_small_patch16_224-cd65a155.pth
     parser.add_argument('--visual_TFV',                     type=str,   default="")
+    # Para for CNN + LSTM
+    parser.add_argument('--lstm_hidden_dim',                type=int, default=128, help='Hidden dimension for LSTM layer')
+    parser.add_argument('--lstm_num_layers',                type=int, default=1, help='Number of LSTM layers (default: 1)')
 
     # Training Para
-    parser.add_argument('--num_epoch',                      type=int,   default=200)
+    parser.add_argument('--num_epoch',                      type=int,   default=100)
     parser.add_argument('--optim',                          type=str,   default='SGD') # 'AdamW' 'Adam' 'RMSprop' 'SGD'  ##'AdamW'(在单点上的效果太差,时序上会在第22个epoch开始上升) ##'Adam'也是 ##'SGD'比较可以，能够学习出东西 ##
     parser.add_argument('--lr',                             type=float, default=5.0e-3)
-    parser.add_argument('--lr_decay_epoch',                 type=int,   default=5)
-    parser.add_argument('--weight_decay',                   type=float, default=5.0e-3)
+    parser.add_argument('--lr_decay_epoch',                 type=int,   default=10)
+    parser.add_argument('--weight_decay',                   type=float, default=5e-4)
     # Para for retraining and testing
     parser.add_argument('--load_model',                     type=bool,  default=False)
     parser.add_argument('--load_model_dir',                 type=str,   default="")
@@ -138,18 +143,20 @@ if __name__ == '__main__':
             model = VGG_ViT_Fusion(args)
         elif args.model_type == 'cnn':
             model = CNN_Fusion(args)
-        # elif args.model_type == 'cnn_tfv_crossattention':
-        #     model = CNN_TFV_CrossAttention(args)
-        # elif args.model_type == 'for_v00_gateattention':
-        #     model = CNN_TFV_Gateattention(args)
-        elif args.model_type == 'CNN_TFV_Gate256':
+        elif args.model_type == 'cnn_tfv_crossattention':
+            model = CNN_TFV_CrossAttention(args)
+        elif args.model_type == 'for_v00_gateattention':
+            model = CNN_TFV_Gateattention(args)
+        elif args.model_type == 'for_CNN_TFV_CrossAttentiongate':
             model = CNN_TFV_CrossAttentiongate(args)
         elif args.model_type == 'CNN_TFV_Gate512':
             model = CNN_TFV_Gate512(args)
-        elif args.model_type == 'CNN_GateAttention':
+        elif args.model_type == 'CNN_Gate_Multiview':
             model = CNN_Gate_Multiview(args)
         elif args.model_type == 'ViT_GateAttention':
             model = ViT_GateAttention(args)
+        elif args.model_type == 'cnn_lstm':
+            model = CNN_LSTM(args)
         elif args.model_type == 'vit_token_fusion':
             # model = create_model(
             #     args.vit_fusion_model_name,
