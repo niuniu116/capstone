@@ -16,6 +16,7 @@ from model.single_test import CNN_TFV_CrossAttentiongate
 from model.single_test512 import CNN_TFV_Gate512
 from model.CNN_ATTENTION import CNN_Gate_Multiview
 from model.VIT_GATEATTENTION import ViT_GateAttention
+from model.CNN_LSTM_ATTENTION import CNN_LSTM_ATTENTION
 from model.CNN_LSTM import CNN_LSTM
 
 
@@ -29,13 +30,16 @@ def set_args():
     parser.add_argument('--model_dir',                      type=str,   default="/root/autodl-tmp/data/model")
     parser.add_argument('--batch_size',                     type=int,   default=32)
     # Model Para
-    parser.add_argument('--model_type',                     type=str,   default='cnn_lstm') # use_vit; vgg_vit_exchange; vgg_vit_fusion; cnn; vit_token_fusion; cnn_tfv_crossattention; for_v00_gateattention; for_CNN_TFV_CrossAttentiongate; CNN_TFV_Gate512; CNN_Gate_Multiview; ViT_GateAttention; cnn_lstm
+    parser.add_argument('--model_type',                     type=str,   default='cnn_lstm')
+    # use_vit; vgg_vit_exchange; vgg_vit_fusion; cnn; vit_token_fusion; cnn_tfv_crossattention;
+    # for_v00_gateattention; for_CNN_TFV_CrossAttentiongate; CNN_TFV_Gate512; CNN_Gate_Multiview; ViT_GateAttention;
+    # cnn_lstm; cnn_lstm_attention
     parser.add_argument('--num_class',                      type=int,   default=5)
     parser.add_argument('--pretrained',                     type=bool,  default=True)
     parser.add_argument('--debug',                          type=bool,  default=False)
     # Para for CNN-based model
-    parser.add_argument('--net_type',                       type=str,   default='resnet') # resnet; vgg; densenet; inception
-    parser.add_argument('--depth',                          type=str,   default='50') # 18, 34, 50, 101, 152; 16, 19, 16bn, 19bn; 121, 169, 201; v3
+    parser.add_argument('--net_type',                       type=str,   default='vgg') # resnet; vgg; densenet; inception
+    parser.add_argument('--depth',                          type=str,   default='19') # 18, 34, 50, 101, 152; 16, 19, 16bn, 19bn; 121, 169, 201; v3
     parser.add_argument('--feature_dim',                    type=int,   default=256)
     # Para for using only one visit in CNN-based model
     parser.add_argument('--single_v',                       type=bool,  default=False)
@@ -56,7 +60,7 @@ def set_args():
     parser.add_argument('--lstm_num_layers',                type=int, default=1, help='Number of LSTM layers (default: 1)')
 
     # Training Para
-    parser.add_argument('--num_epoch',                      type=int,   default=100)
+    parser.add_argument('--num_epoch',                      type=int,   default=50)
     parser.add_argument('--optim',                          type=str,   default='SGD') # 'AdamW' 'Adam' 'RMSprop' 'SGD'  ##'AdamW'(在单点上的效果太差,时序上会在第22个epoch开始上升) ##'Adam'也是 ##'SGD'比较可以，能够学习出东西 ##
     parser.add_argument('--lr',                             type=float, default=5.0e-3)
     parser.add_argument('--lr_decay_epoch',                 type=int,   default=10)
@@ -155,6 +159,8 @@ if __name__ == '__main__':
             model = CNN_Gate_Multiview(args)
         elif args.model_type == 'ViT_GateAttention':
             model = ViT_GateAttention(args)
+        elif args.model_type == 'cnn_lstm_attention':
+            model = CNN_LSTM_ATTENTION(args)
         elif args.model_type == 'cnn_lstm':
             model = CNN_LSTM(args)
         elif args.model_type == 'vit_token_fusion':
