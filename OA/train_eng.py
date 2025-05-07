@@ -110,6 +110,70 @@ def train_model(args, model, dset_loaders, dset_size):
                     args.best_model_path = os.path.join(best_model_path, val_metric_str + test_metric_str)
                     torch.save(model.state_dict(), args.best_model_path)
                     # model.to(device=device)
+                maybe_visualize(model, dset_loaders["val"], args, epoch)
 
     print('=' * 80)
     print('Validation best_acc: {}  best_num_epoch: {}'.format(best_val_acc, best_num_epoch))
+# this code for attention map
+def maybe_visualize(model, dataloader, args, epoch, output_dir="vis_results"):
+    if epoch != 0 and epoch % 10 != 0:
+        return
+    # if epoch % 2 != 0:
+    #     return
+
+    from pytorch_grad_cam import GradCAM
+    from pytorch_grad_cam.utils.image import show_cam_on_image
+    from torchvision.utils import save_image
+    import numpy as np, os, cv2
+
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model.eval()
+    model.to(device)
+    cnn_model = model.cnn_model
+    cnn_model = cnn_model.cuda() if torch.cuda.is_available() else cnn_model.cpu()
+
+    target_layer = cnn_model.features[35]  # VGG19 last conv
+    os.makedirs(output_dir, exist_ok=True)
+
+    for i, batch in enumerate(dataloader):
+        v00, v12, v24, labels = [x.to(device) for x in batch]
+        v00.requires_grad_()
+        v12.requires_grad_()
+        v24.requires_grad_()
+
+        # for get cnn feature
+        v00_f = cnn_model(v00)
+        v12_f = cnn_model(v12)
+        v24_f = cnn_model(v24)
+        sequence = torch.stack([v00_f, v12_f, v24_f], dim=1)
+        weights = model.time_attn(sequence)
+        weights = torch.softmax(weights, dim=1)
+
+        # only attention last batch
+        for j in range(v00.size(0)):
+            sample_idx = i * dataloader.batch_size + j
+            att = weights[j].squeeze().detach().cpu().numpy()
+
+            for t_idx, (v_tensor, tag) in enumerate(zip([v00, v12, v24], ['v00', 'v12', 'v24'])):
+                input_img = v_tensor[j].unsqueeze(0)
+
+                with GradCAM(model=cnn_model, target_layers=[target_layer]) as cam:
+                    grayscale_cam = cam(input_tensor=input_img, targets=None)[0]
+
+                rgb_img = input_img.squeeze().detach().cpu().permute(1, 2, 0).numpy()
+                rgb_img = np.clip((rgb_img * 0.229 + 0.485), 0, 1)
+                cam_image = show_cam_on_image(rgb_img, grayscale_cam, use_rgb=True)
+                cam_bgr = cv2.cvtColor(cam_image, cv2.COLOR_RGB2BGR)
+
+                # save formation
+                epoch_dir = os.path.join(output_dir, f"epoch_{epoch}", f"sample_{sample_idx}")
+                os.makedirs(epoch_dir, exist_ok=True)
+
+                save_image(input_img, f"{epoch_dir}/{tag}_input.jpg")
+                cv2.imwrite(f"{epoch_dir}/{tag}_cam.jpg", cam_bgr)
+
+            # save attention
+            np.save(f"{epoch_dir}/attention_weights.npy", att)
+
+        break
+
