@@ -30,7 +30,7 @@ def set_args():
     parser.add_argument('--model_dir',                      type=str,   default="/root/autodl-tmp/data/model")
     parser.add_argument('--batch_size',                     type=int,   default=32)
     # Model Para
-    parser.add_argument('--model_type',                     type=str,   default='cnn_lstm')
+    parser.add_argument('--model_type',                     type=str,   default='cnn_lstm_attention')
     # use_vit; vgg_vit_exchange; vgg_vit_fusion; cnn; vit_token_fusion; cnn_tfv_crossattention;
     # for_v00_gateattention; for_CNN_TFV_CrossAttentiongate; CNN_TFV_Gate512; CNN_Gate_Multiview; ViT_GateAttention;
     # cnn_lstm; cnn_lstm_attention
