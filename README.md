@@ -22,6 +22,21 @@ https://arxiv.org/abs/1804.05338
 SonoNet: Real-Time Detection and Localisation of Fetal Standard Scan Planes in Freehand Ultrasound
 https://ieeexplore.ieee.org/document/7974824
 
+Attention Map Guided Transformer Pruning for Edge Device
+https://arxiv.org/abs/2304.01452
+github:https://github.com/NUST-Machine-Intelligence-Laboratory/AMG
+
+Grad-CAM: Visual Explanations from Deep Networks via Gradient-based Localization
+https://arxiv.org/abs/1610.02391
+For linux: https://github.com/ramprs/grad-cam/
+For pytorch: https://github.com/jacobgil/pytorch-grad-cam
+
+
+
+
+
+
+
 
 
 
