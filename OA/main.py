@@ -10,7 +10,7 @@ from eval_eng import visualise_TFV
 import model.Fusion_ViT
 from timm.models import create_model
 from model.CNN_TFV_CrossAttention import CNN_TFV_CrossAttention
-from model.test_gateattention_512 import CNN_TFV_Gateattention
+# from model.test_gateattention_512 import CNN_TFV_Gateattention
 # from model.cnn_vgg19_gateattention_256 import CNN_TFV_SelfGateAttention
 from model.single_test import CNN_TFV_CrossAttentiongate
 from model.single_test512 import CNN_TFV_Gate512
