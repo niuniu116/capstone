@@ -1,4 +1,4 @@
-# capstone
+![image](https://github.com/user-attachments/assets/d9f1b35e-096f-4aa7-aab2-4cba75638dcd)# capstone
 this code for our project
 Reference:
 AN IMAGE IS WORTH 16X16 WORDS:TRANSFORMERS FOR IMAGE RECOGNITION AT SCALE.
@@ -31,6 +31,8 @@ https://arxiv.org/abs/1610.02391
 For linux: https://github.com/ramprs/grad-cam/
 For pytorch: https://github.com/jacobgil/pytorch-grad-cam
 
+
+![image](https://github.com/user-attachments/assets/c3596adb-eb18-4fdb-83f0-e5588ea22138)
 
 
 
