@@ -1,7 +1,7 @@
 # Basic architecture of the model for cnn+lstm
 ![image](https://github.com/user-attachments/assets/d9f1b35e-096f-4aa7-aab2-4cba75638dcd)
 
-
+# cnn+attention+lstm
 ![image](https://github.com/user-attachments/assets/590e1738-1e25-4fd5-a7b9-07aa6370857f)
 
 
