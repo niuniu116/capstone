@@ -1,5 +1,11 @@
-![image](https://github.com/user-attachments/assets/d9f1b35e-096f-4aa7-aab2-4cba75638dcd)# capstone
-this code for our project
+Basic architecture of the model for cnn+lstm
+![image](https://github.com/user-attachments/assets/d9f1b35e-096f-4aa7-aab2-4cba75638dcd)
+
+
+
+
+
+
 Reference:
 AN IMAGE IS WORTH 16X16 WORDS:TRANSFORMERS FOR IMAGE RECOGNITION AT SCALE.
 https://arxiv.org/pdf/2010.11929/1000
