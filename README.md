@@ -2,7 +2,8 @@
 ![image](https://github.com/user-attachments/assets/d9f1b35e-096f-4aa7-aab2-4cba75638dcd)
 
 # cnn+attention+lstm
-![image](https://github.com/user-attachments/assets/282f9a65-e675-4c83-ace3-5daab10b7024)
+![image](https://github.com/user-attachments/assets/5b3d09af-9b6c-4c62-95e6-9ab0d00bc416)
+
 
 
 
