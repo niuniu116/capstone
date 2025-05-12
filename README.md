@@ -32,9 +32,6 @@ For linux: https://github.com/ramprs/grad-cam/
 For pytorch: https://github.com/jacobgil/pytorch-grad-cam
 
 
-![image](https://github.com/user-attachments/assets/c3596adb-eb18-4fdb-83f0-e5588ea22138)
-
-
 
 
 
