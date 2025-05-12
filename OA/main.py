@@ -12,7 +12,7 @@ from timm.models import create_model
 from model.CNN_TFV_CrossAttention import CNN_TFV_CrossAttention
 # from model.test_gateattention_512 import CNN_TFV_Gateattention
 # from model.cnn_vgg19_gateattention_256 import CNN_TFV_SelfGateAttention
-from model.single_test import CNN_TFV_CrossAttentiongate
+# from model.single_test import CNN_TFV_CrossAttentiongate
 from model.single_test512 import CNN_TFV_Gate512
 from model.CNN_ATTENTION import CNN_Gate_Multiview
 from model.VIT_GATEATTENTION import ViT_GateAttention
