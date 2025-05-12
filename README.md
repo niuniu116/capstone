@@ -1,5 +1,11 @@
 # Basic architecture of the model for cnn+lstm
 ![image](https://github.com/user-attachments/assets/d9f1b35e-096f-4aa7-aab2-4cba75638dcd)
+
+
+![image](https://github.com/user-attachments/assets/28c85c8f-4db4-40b5-89e0-6d21c4f748a7)
+
+
+
 # Reference:
 AN IMAGE IS WORTH 16X16 WORDS:TRANSFORMERS FOR IMAGE RECOGNITION AT SCALE.
 https://arxiv.org/pdf/2010.11929/1000
@@ -30,6 +36,8 @@ Grad-CAM: Visual Explanations from Deep Networks via Gradient-based Localization
 https://arxiv.org/abs/1610.02391
 For linux: https://github.com/ramprs/grad-cam/
 For pytorch: https://github.com/jacobgil/pytorch-grad-cam
+
+
 
 
 
