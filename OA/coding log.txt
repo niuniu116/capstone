@@ -1,7 +1,0 @@
-2022/9/15 - 4：30 a.m.
-The VGG_ViT Fusion model is now a transformer block between different VGG-19 models (3 models), the inputs are features from 3 VGG-19, after patch generation and embedding, 
-all tokens are fed to transformer and get a trans-result. 2 trans-results from 256 channel level, and 512 chaanel level are concat and use a linear function to produce the final result.
-
-The work is stopped at the next step of modification: Change the fusion type from concat to add/multiply. 
-In specific, the features from 3 VGG-19 are firstly added or multiplied into 1 feature, and the feature will be then fed to a original ViT to produce the trans-result. 
-However, the meaning of the add or multiply operations are considered. Why I need this operation on the 3 features, and why it will work? 
