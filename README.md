@@ -39,6 +39,31 @@ https://arxiv.org/abs/1610.02391
 For linux: https://github.com/ramprs/grad-cam/
 For pytorch: https://github.com/jacobgil/pytorch-grad-cam
 
+Long Short-Term Memory Based Recurrent Neural Network Architectures for Large Vocabulary Speech Recognition
+https://arxiv.org/abs/1402.1128
+
+Very Deep Convolutional Networks for Large-Scale Image Recognition
+https://arxiv.org/abs/1409.1556
+
+Deep Residual Learning for Image Recognition
+https://arxiv.org/pdf/1512.03385
+
+Neural Machine Translation by Jointly Learning to Align and Translate
+https://arxiv.org/abs/1409.0473
+
+Going Deeper with Nested U-Structure for Salient Object Detection
+https://www.sciencedirect.com/science/article/abs/pii/S0031320320302077
+
+Automatic knee osteoarthritis severity grading based on X-ray images using a hierarchical classification method
+https://link.springer.com/article/10.1186/s13075-024-03416-4
+Source code URL: https://github.com/xuebinqin/U-2-Net
+
+
+
+
+
+
+
 
 
 
