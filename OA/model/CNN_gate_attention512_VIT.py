@@ -21,9 +21,8 @@ def load_pretrained_vit(model, finetune_path):
         checkpoint = torch.load(finetune_path, map_location='cpu')
 
     if 'model' in checkpoint:
-        checkpoint = checkpoint['model']  # 兼容 Facebook 格式
-
-    # 丢掉不匹配 shape 的 key（如 head, pos_embed）
+        checkpoint = checkpoint['model']
+        
     incompatible_keys = []
     state_dict = model.state_dict()
     for k in list(checkpoint.keys()):
