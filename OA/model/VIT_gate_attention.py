@@ -72,7 +72,6 @@ class ViT_GateAttention(nn.Module):
                 pooled = F.adaptive_avg_pool2d(gated, 1).view(gated.size(0), -1)
                 return self.v24_vit.head(pooled)
 
-        # 多帧融合路径
         f00 = self.vit_feat_to_grid(self.v00_vit.forward_features(v00))
         f12 = self.vit_feat_to_grid(self.v12_vit.forward_features(v12))
         f24 = self.vit_feat_to_grid(self.v24_vit.forward_features(v24))
