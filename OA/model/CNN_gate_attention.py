@@ -65,7 +65,6 @@ class CNN_Gate_Multiview(nn.Module):
             else:
                 raise ValueError("Invalid visit_num")
 
-        # 多视角融合模式
         f00 = self.extract_feat(self.v00_feat_256, self.v00_feat_512, self.att_v00, v00)
         f12 = self.extract_feat(self.v12_feat_256, self.v12_feat_512, self.att_v12, v12)
         f24 = self.extract_feat(self.v24_feat_256, self.v24_feat_512, self.att_v24, v24)
