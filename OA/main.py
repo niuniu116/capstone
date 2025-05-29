@@ -54,9 +54,8 @@ def set_args():
     parser.add_argument('--single_v',                       type=bool,  default=False)
     parser.add_argument('--visit_num',                      type=str,   default='v00')
     # Para for VGG-ViT fusion model
-    parser.add_argument('--fusion_type',                    type=str,   default='concat') # concat; multiply; add; mean; attention  ##concat好使 ##add好使(12个epoch之后)（--塌缩） ##mean也好使 ##multiply（不好使，跟add效果一样，会塌缩）##attention(也不好使)
-    # Para for ViT Token Fusion Model
-    parser.add_argument('--vit_fusion_model_name',          type=str,   default='deit_base_patch16_224', metavar='MODEL')# deit_base_patch16_224 deit_small_patch16_224_shrink(这个其实可以注释掉，用不到)
+    parser.add_argument('--fusion_type',                    type=str,   default='concat') # concat; multiply; add; mean; attention
+    parser.add_argument('--vit_fusion_model_name',          type=str,   default='deit_base_patch16_224', metavar='MODEL')# deit_base_patch16_224 deit_small_patch16_224_shrink
     parser.add_argument('--drop',                           type=float, default=0.0, metavar='PCT')
     parser.add_argument('--drop-path',                      type=float, default=0.1, metavar='PCT')
     parser.add_argument('--fuse_token',                     action='store_true')
@@ -74,7 +73,7 @@ def set_args():
 
     # Training Para
     parser.add_argument('--num_epoch',                      type=int,   default=100)
-    parser.add_argument('--optim',                          type=str,   default='SGD') # 'AdamW' 'Adam' 'RMSprop' 'SGD'  ##'AdamW'(在单点上的效果太差,时序上会在第22个epoch开始上升) ##'Adam'也是 ##'SGD'比较可以，能够学习出东西 ##
+    parser.add_argument('--optim',                          type=str,   default='SGD') # 'AdamW' 'Adam' 'RMSprop' 'SGD' 
     parser.add_argument('--lr',                             type=float, default=5.0e-3)
     parser.add_argument('--lr_decay_epoch',                 type=int,   default=10)
     parser.add_argument('--weight_decay',                   type=float, default=5e-4)
