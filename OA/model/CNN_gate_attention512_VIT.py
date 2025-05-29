@@ -45,12 +45,10 @@ class CNN_TFV_Gate512(nn.Module):
         self.base_keep_rate = args.base_keep_rate
         self.fusion_type = args.fusion_type
 
-        # === Backbones for v00, v12, v24 ===
         self.v00_backbone = get_cnn_model(args=args)
         self.v12_backbone = get_cnn_model(args=args)
         self.v24_backbone = get_cnn_model(args=args)
 
-        # Extract 256 and 512 feature blocks
         self.v00_feat_256 = self.v00_backbone.features[:19]  # conv1_1 ~ conv4_4
         self.v00_feat_512 = self.v00_backbone.features[19:37]  # conv5_x
 
@@ -60,12 +58,10 @@ class CNN_TFV_Gate512(nn.Module):
         self.v24_feat_256 = self.v24_backbone.features[:19]
         self.v24_feat_512 = self.v24_backbone.features[19:37]
 
-        # === Attention blocks ===
         self.att_v00 = GridAttentionBlock2D_TORR(256, 512, 128, mode='concatenation_sigmoid')
         self.att_v12 = GridAttentionBlock2D_TORR(256, 512, 128, mode='concatenation_sigmoid')
         self.att_v24 = GridAttentionBlock2D_TORR(256, 512, 128, mode='concatenation_sigmoid')
 
-        # === Vision Transformers ===
         self.v00_vit = create_model('deit_base_patch16_224', pretrained=False, num_classes=args.num_class,
                                     drop_rate=args.drop, drop_path_rate=args.drop_path, fuse_token=args.fuse_token,
                                     img_size=(28, 28), in_chans=256)
@@ -108,7 +104,6 @@ class CNN_TFV_Gate512(nn.Module):
                 out, _ = self.v24_vit(att, self.base_keep_rate, get_idx=True)
                 return out
 
-        # === Multi-view fusion ===
         x256_00 = self.v00_feat_256(v00)
         x512_00 = self.v00_feat_512(x256_00)
         x512_00 = F.interpolate(x512_00, size=x256_00.shape[2:], mode='bilinear', align_corners=False)
