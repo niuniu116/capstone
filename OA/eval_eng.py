@@ -44,7 +44,6 @@ def eval_test(args, model, dset_loaders, dset_size, phase="test"):
         # else:
         #     outputs = model(v00_inputs, v12_inputs, v24_inputs)
         if args.model_type == 'vit_token_fusion':
-            # 针对 ViT 原生模型，使用 base_keep_rate 控制
             if args.single_v:
                 if args.visit_num == 'v00':
                     outputs = model(v00_inputs, args.base_keep_rate)
@@ -57,7 +56,6 @@ def eval_test(args, model, dset_loaders, dset_size, phase="test"):
             else:
                 outputs = model(v00_inputs, v12_inputs, v24_inputs)
         else:
-            # 对于所有其他自定义模型（包括带 attention 的）
             if args.single_v:
                 if args.visit_num == 'v00':
                     outputs = model(v00_inputs)
