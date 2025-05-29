@@ -15,7 +15,6 @@ def get_cnn_model_fixed(args, checkpoint):
     num_ftrs = vgg.classifier[6].in_features
     vgg.classifier[6] = nn.Linear(num_ftrs, args.feature_dim)
 
-    # 加载 cnn 权重
     vgg_state = {k.replace("cnn_model.", ""): v for k, v in checkpoint.items() if k.startswith("cnn_model.")}
     vgg.load_state_dict(vgg_state, strict=False)
 
@@ -64,7 +63,6 @@ class CNN_LSTM_Attn(nn.Module):
         features = self.cnn_model(x)           # (B*3, 256)
         features = features.view(B, V, -1)     # (B, 3, 256)
 
-        # ===== 时间注意力 =====
         attn_weights = self.time_attn(features)      # (B, 3, 1)
         attn_weights = torch.softmax(attn_weights, dim=1)
         attended = torch.sum(features * attn_weights, dim=1, keepdim=True)  # (B, 1, 256)
