@@ -26,7 +26,6 @@ class CNN_TFV_CrossAttentiongate(nn.Module):
         self.base_keep_rate = args.base_keep_rate
         self.fusion_type = args.fusion_type
 
-        # === VGG Backbone for each visit ===
         v00_backbone = get_cnn_model(args=args)
         v12_backbone = get_cnn_model(args=args)
         v24_backbone = get_cnn_model(args=args)
@@ -35,7 +34,6 @@ class CNN_TFV_CrossAttentiongate(nn.Module):
         self.v12_backbone_256 = v12_backbone.features[0:19]
         self.v24_backbone_256 = v24_backbone.features[0:19]
 
-        # === Grid Attention Block (Self-guided on 256) ===
         self.att_block_v00 = GridAttentionBlock2D_TORR(
             in_channels=256, gating_channels=256, inter_channels=128,
             mode='concatenation_sigmoid', sub_sample_factor=(1, 1), use_W=True
@@ -51,7 +49,6 @@ class CNN_TFV_CrossAttentiongate(nn.Module):
             mode='concatenation_sigmoid', sub_sample_factor=(1, 1), use_W=True
         )
 
-        # === ViT ===
         self.v00_256_FTV = create_model(
             'deit_base_patch16_224', pretrained=False, num_classes=args.num_class,
             drop_rate=args.drop, drop_path_rate=args.drop_path, fuse_token=args.fuse_token,
@@ -69,7 +66,6 @@ class CNN_TFV_CrossAttentiongate(nn.Module):
         self.concat_linear = nn.Linear(self.num_class * 3, self.num_class)
 
     def forward(self, v00=None, v12=None, v24=None):
-        # === Feature extraction ===
         if self.single_v:
             if self.visit_num == 'v00':
                 assert v00 is not None, "v00 input is None in single_v mode"
@@ -98,12 +94,10 @@ class CNN_TFV_CrossAttentiongate(nn.Module):
 
 
         assert all(x is not None for x in [v00, v12, v24]), "Multi-input mode requires all inputs"
-        # === Feature extraction for all visits ===
         v00_feat = self.v00_backbone_256(v00)
         v12_feat = self.v12_backbone_256(v12)
         v24_feat = self.v24_backbone_256(v24)
 
-        # === Self-guided attention ===
         v00_att, _ = self.att_block_v00(v00_feat, v00_feat)
         v12_att, _ = self.att_block_v12(v12_feat, v12_feat)
         v24_att, _ = self.att_block_v24(v24_feat, v24_feat)
